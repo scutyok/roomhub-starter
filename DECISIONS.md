@@ -21,4 +21,3 @@ Give a concrete example of code or an idea proposed by the AI that you corrected
 
 ## 6. If you had 30 more minutes
 What would you improve and what risk did you leave in the project?
-

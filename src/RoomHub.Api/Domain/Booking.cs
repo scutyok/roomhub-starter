@@ -62,10 +62,13 @@ public sealed class Booking
             && other.StartUtc < EndUtc;
     }
 
-    public Result<bool> Cancel()
+    public Result<bool> Cancel(DateTime now)
     {
         if (Status == BookingStatus.Cancelled)
             return Result<bool>.Failure(new Error("BookingAlreadyCancelled", "The booking is already cancelled.", 409));
+
+        if (StartUtc - now < TimeSpan.FromMinutes(60))
+            return Result<bool>.Failure(new Error("CancellationTooLate", "A booking can only be cancelled at least 60 minutes before it starts.", 409));
 
         Status = BookingStatus.Cancelled;
         return Result<bool>.Success(true);
