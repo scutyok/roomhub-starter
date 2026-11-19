@@ -52,4 +52,93 @@ Content-Type: application/json
 ### 7. Cancel booking
 POST {{baseUrl}}/api/bookings/{{bookingId}}/cancel
 
-### 8. Add your own requests here for the rules in ASSIGNMENT.md
+### 8. Create a large room (capacity 11)
+# @name createLargeRoom
+POST {{baseUrl}}/api/rooms
+Content-Type: application/json
+
+{
+  "name": "Large study room",
+  "capacity": 11
+}
+
+###
+@largeRoomId = {{createLargeRoom.response.body.$.id}}
+
+### 9. R10 - exactly 2 hours is allowed in a room with capacity 11
+POST {{baseUrl}}/api/rooms/{{largeRoomId}}/bookings
+Content-Type: application/json
+
+{
+  "bookedBy": "large-room-user",
+  "startUtc": "2030-02-10T10:00:00Z",
+  "endUtc": "2030-02-10T12:00:00Z",
+  "attendees": 11
+}
+
+### 10. R10 - more than 2 hours is rejected with 400
+POST {{baseUrl}}/api/rooms/{{largeRoomId}}/bookings
+Content-Type: application/json
+
+{
+  "bookedBy": "large-room-user",
+  "startUtc": "2030-02-10T13:00:00Z",
+  "endUtc": "2030-02-10T15:01:00Z",
+  "attendees": 11
+}
+
+### 11. R9 - first active booking on a UTC day for ana
+POST {{baseUrl}}/api/rooms/{{roomId}}/bookings
+Content-Type: application/json
+
+{
+  "bookedBy": "ana",
+  "startUtc": "2030-03-10T10:00:00Z",
+  "endUtc": "2030-03-10T11:00:00Z",
+  "attendees": 2
+}
+
+### 12. R9 - second active booking on the same UTC day across rooms
+POST {{baseUrl}}/api/rooms/{{largeRoomId}}/bookings
+Content-Type: application/json
+
+{
+  "bookedBy": "ana",
+  "startUtc": "2030-03-10T12:00:00Z",
+  "endUtc": "2030-03-10T13:00:00Z",
+  "attendees": 2
+}
+
+### 13. R9 - third active booking on the same UTC day is rejected with 409
+POST {{baseUrl}}/api/rooms/{{roomId}}/bookings
+Content-Type: application/json
+
+{
+  "bookedBy": "ana",
+  "startUtc": "2030-03-10T14:00:00Z",
+  "endUtc": "2030-03-10T15:00:00Z",
+  "attendees": 2
+}
+
+### 14. R11 - cancel a booking starting at least 60 minutes later (expected 204)
+POST {{baseUrl}}/api/bookings/{{bookingId}}/cancel
+
+### 15. R11 - create a near-future booking
+### Change the timestamps immediately before sending so the start is less than 60 minutes from now.
+# @name nearFutureBooking
+POST {{baseUrl}}/api/rooms/{{roomId}}/bookings
+Content-Type: application/json
+
+{
+  "bookedBy": "near-future-user",
+  "startUtc": "2026-11-19T10:30:00Z",
+  "endUtc": "2026-11-19T11:30:00Z",
+  "attendees": 2
+}
+
+###
+@nearFutureBookingId = {{nearFutureBooking.response.body.$.id}}
+
+### 16. R11 - cancel less than 60 minutes before start (expected 409)
+### Use only after updating the timestamps above to a near-future interval.
+POST {{baseUrl}}/api/bookings/{{nearFutureBookingId}}/cancel
