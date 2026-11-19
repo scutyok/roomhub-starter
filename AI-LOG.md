@@ -4,6 +4,7 @@ Write down, in order, what you asked the AI. It is not a punishment: a missing o
 
 | Time (approx.) | What you asked (briefly) | What you kept | What you changed or rejected |
 |---|---|---|---|
-| 09:06 | Asked the AI to identify starter contradictions and inspect the assignment | I kept the API contract and business-rule summaries | I rejected a proposed blanket rewrite until the concrete starter behavior was verified against the assignment. |
-| 09:08 | Asked the AI to implement the vertical-slice and rich-domain architecture | Kept the five feature areas, private domain properties, `Result<T>`, and EF Core repository approach | Rejected initial package versions incompatible with net10.0 and corrected them to EF Core 10.0.0. |
-| 09:10 | Asked the AI to fix compile errors and test the HTTP contract | Kept strict overlap rules, `TimeProvider`, and SQLite | Corrected an ambiguous `RoomResult` name and missing namespace import discovered by the compiler. |
+| 09:06 | I-am cerut AI-ului sa inspecteze cerinta data | Am pastrat contractul API si regulile de afaceri | Am respins o rescriere completa pana cand comportamentul concret al starterului a fost verificat fata de cerinta. |
+| 09:08 | I-am cerut AI sa implementeze arhitectura pe vertical slice si modelul de domeniu bogat | Am pastrat cinci zone de features, proprietatile private ale domeniului, `Result<T>` si abordarea EF Core prin repository | Am respins versiunile initiale ale pachetelor incompatibile cu net10.0 si am corectat la EF Core 10.0.0. |
+| 09:10 | I-am cerut AI sa corecteze erorile de compilare si sa testeze contractul HTTP | Am pastrat regulile stricte de suprapunere, `TimeProvider` si SQLite | Am corectat numele ambiguu `RoomResult` si namespace-ul lipsa descoperite de compilator. |
+| 09:20 | I-am cerut AI sa adauge regula noii cerinte pentru maximum doua rezervari active pe zi pentru acelasi participant | Am pastrat zilele in UTC, contarea rezervarilor active in toate camerele si anularea ca exceptie | Am adaugat o metoda in repository si verificarea in `CreateBookingHandler`, nu in endpoint. |

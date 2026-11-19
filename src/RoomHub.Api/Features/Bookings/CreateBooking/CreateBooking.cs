@@ -57,6 +57,20 @@ public sealed class CreateBookingHandler(
                 new Error("RoomOccupied", "The room is occupied in this interval.", 409));
         }
 
+        var activeBookingsForParticipant = await bookings.CountActiveForParticipantOnUtcDateAsync(
+            booking.BookedBy,
+            booking.StartUtc,
+            cancellationToken);
+
+        if (activeBookingsForParticipant >= 2)
+        {
+            return Result<BookingCreatedResult>.Failure(
+                new Error(
+                    "ParticipantBookingLimitExceeded",
+                    "The participant already has two active bookings on this day.",
+                    409));
+        }
+
         await bookings.AddAsync(booking, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return Result<BookingCreatedResult>.Success(

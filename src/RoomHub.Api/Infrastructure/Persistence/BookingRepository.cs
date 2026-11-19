@@ -19,6 +19,23 @@ public sealed class BookingRepository(RoomHubDbContext db) : IBookingRepository
             .ToListAsync(cancellationToken);
     }
 
+    public Task<int> CountActiveForParticipantOnUtcDateAsync(
+        string bookedBy,
+        DateTime utcDate,
+        CancellationToken cancellationToken = default)
+    {
+        var start = utcDate.Date;
+        var end = start.AddDays(1);
+
+        return db.Bookings.CountAsync(
+            booking =>
+                booking.BookedBy == bookedBy
+                && booking.Status == BookingStatus.Active
+                && booking.StartUtc >= start
+                && booking.StartUtc < end,
+            cancellationToken);
+    }
+
     public async Task AddAsync(Booking booking, CancellationToken cancellationToken = default)
     {
         await db.Bookings.AddAsync(booking, cancellationToken);
