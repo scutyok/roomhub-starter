@@ -38,8 +38,18 @@ public sealed class Booking
             return Result<Booking>.Failure(new Error("AttendeesExceedCapacity", "The room does not have enough seats.", 400));
         if (startUtc < now)
             return Result<Booking>.Failure(new Error("BookingInPast", "A booking cannot start in the past.", 400));
-        if (endUtc - startUtc > TimeSpan.FromHours(4))
-            return Result<Booking>.Failure(new Error("InvalidDuration", "A booking cannot last longer than 4 hours.", 400));
+        var maximumDuration = room.Capacity > 10
+            ? TimeSpan.FromHours(2)
+            : TimeSpan.FromHours(4);
+
+        if (endUtc - startUtc > maximumDuration)
+        {
+            var durationMessage = room.Capacity > 10
+                ? "A booking in a room with capacity greater than 10 cannot last longer than 2 hours."
+                : "A booking cannot last longer than 4 hours.";
+
+            return Result<Booking>.Failure(new Error("InvalidDuration", durationMessage, 400));
+        }
 
         return Result<Booking>.Success(new Booking(roomId, bookedBy.Trim(), startUtc, endUtc, attendees));
     }
